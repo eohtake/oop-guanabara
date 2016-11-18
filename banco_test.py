@@ -8,9 +8,16 @@ class ContaBancoTestCase(unittest.TestCase):
     pass
 
 
-class ContaBancoTest(unittest.TestCase):
+class ContaBancoTest(ContaBancoTestCase):
     def setUp(self):
         self.conta = ContaBanco(randint(1000, 9999), "Eric Ohtake")
+
+    def test_extrato(self):
+        self.conta.abrirconta("CP")
+        self.conta.depositar(50)
+        self.conta.sacar(20)
+        self.conta.pagarmensalidade()
+        self.assertEqual(self.conta.statusatual(), "============== FIM DO EXTRATO ===========")
 
 
 class AbrirContaTest(ContaBancoTest):
@@ -65,7 +72,7 @@ class SacarTest(ContaBancoTest):
     def test_sacar_da_conta_fechada(self):
         self.conta.sacar(50)
         self.conta.fecharconta()
-        self.assertEqual(self.conta.sacar(50), "Não é possível depositar. A conta foi encerrada.")
+        self.assertEqual(self.conta.sacar(50), "Não é possível sacar. A conta foi encerrada.")
 
 
 class FecharContaTest(ContaBancoTest):
@@ -85,5 +92,60 @@ class FecharContaTest(ContaBancoTest):
         self.conta.saldo = -1
         self.assertEqual(self.conta.fecharconta(), "A conta possui débito. Não é possível fechar.")
 
+
+class PagarMensalidadeTest(ContaBancoTest):
+    def setUp(self):
+        self.conta = ContaBanco(randint(1000, 9999), "Eric Ohtake")
+
+    def test_paga_mensalidade_conta_cp(self):
+        self.conta.abrirconta("CP")
+        self.assertEqual(self.conta.pagarmensalidade(), "Você pagou {0} de mensalidade e seu saldo e de {1}.".format(20, 130))
+
+    def test_paga_mensalidade_conta_cc(self):
+        self.conta.abrirconta("CC")
+        self.assertEqual(self.conta.pagarmensalidade(),
+                         "Você pagou {0} de mensalidade e seu saldo e de {1}.".format(12, 38))
+
+    def test_paga_mensalidade_conta_cc_sem_saldo(self):
+        self.conta.abrirconta("CC")
+        self.conta.sacar(40)
+        self.assertEqual(self.conta.pagarmensalidade(),
+                         "Desculpa amigão, mas você está sem grana pra pagar a mensalidade!")
+
+    def test_paga_mensalidade_conta_cp_sem_saldo(self):
+        self.conta.abrirconta("CP")
+        self.conta.sacar(131)
+        self.assertEqual(self.conta.pagarmensalidade(),
+                         "Desculpa amigão, mas você está sem grana pra pagar a mensalidade!")
+
+    def test_paga_mensalidade_conta_fechada(self):
+        self.conta.abrirconta("CC")
+        self.conta.sacar(50)
+        self.conta.fecharconta()
+        self.assertEqual(self.conta.pagarmensalidade(),
+                         "Sua conta está fechada. Não há mensalidades para serem pagas.")
+
+
 if __name__ == '__main__':
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

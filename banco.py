@@ -58,51 +58,28 @@ class ContaBanco(object):
             else:
                 print("Seu saldo é de: %d " % self.saldo)
                 return "Desculpa amigão, mas você está sem grana!"
+        else:
+            return "Não é possível sacar. A conta foi encerrada."
+
 
     def pagarmensalidade(self):
-        CP = 20
-        CC = 12
+        taxa_cp = 20
+        taxa_cc = 12
         if self.status:
             if self.tipoconta == "CP":
-                if self.saldo > 0 and self.saldo >= CP:
-                    self.saldo -= CC
-                    print("Você pagou %d de mensalidade. " % CP)
-                    return "Seu saldo é de: %d " % self.saldo
+                if self.saldo > 0 and self.saldo >= taxa_cp:
+                    self.saldo -= taxa_cp
+                    return "Você pagou {0} de mensalidade e seu saldo e de {1}.".format(taxa_cp, self.saldo)
                 else:
                     print("Seu saldo é de: %d " % self.saldo)
                     return "Desculpa amigão, mas você está sem grana pra pagar a mensalidade!"
 
             elif self.tipoconta == "CC":
-                if self.saldo > 0 and self.saldo >= CC:
-                    self.saldo -= CC
-                    print("Você pagou %d de mensalidade. " % CC)
-                    return "Seu saldo é de: %d " % self.saldo
+                if self.saldo > 0 and self.saldo >= taxa_cc:
+                    self.saldo -= taxa_cc
+                    return "Você pagou {0} de mensalidade e seu saldo e de {1}.".format(taxa_cc, self.saldo)
                 else:
                     print("Seu saldo é de: %d " % self.saldo)
                     return "Desculpa amigão, mas você está sem grana pra pagar a mensalidade!"
         else:
             return "Sua conta está fechada. Não há mensalidades para serem pagas."
-
-acc_num = randint(1000, 9999)
-
-eric_cc = ContaBanco(acc_num, "Eric Ohtake")
-
-eric_cc.abrirconta("CC")
-
-print("A conta está aberta: %s" % eric_cc.status)
-print("Cliente: %s" % eric_cc.dono)
-print("Número da conta: %s" % eric_cc.numconta)
-print("Tipo de conta: %s" % eric_cc.tipoconta)
-print("Saldo: %s" % eric_cc.saldo)
-print(eric_cc.fecharconta())
-print("A conta está aberta: %s" % eric_cc.status)
-print(eric_cc.depositar(1500))
-print("Saldo: %s" % eric_cc.saldo)
-#print(eric_cc.sacar(2000))
-print(eric_cc.sacar(100))
-print(eric_cc.fecharconta())
-print(eric_cc.pagarmensalidade())
-
-print(eric_cc.statusatual())
-
-print(eric_cc) # IMPRIME O METODO __REPR__
